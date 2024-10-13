@@ -33,7 +33,7 @@ pipeline {
                     echo 'Running SonarQube analysis...'
                     sh 'sonar-scanner -v'
                     withSonarQubeEnv('SonarQube') {
-                        sh 'sonar-scanner -Dsonar.projectKey=my-node-app -Dsonar.sources=. -Dsonar.host.url=http://192.168.100.6:9000 -Dsonar.login=squ_1a114a20bbfedabe17113904d9196aa48c05f4ef'
+                        sh 'sonar-scanner -Dsonar.projectKey=my-node-app -Dsonar.sources=. -Dsonar.host.url=http://172.22.0.2:9000 -Dsonar.login=squ_1a114a20bbfedabe17113904d9196aa48c05f4ef'
                     }
                 }
             }
