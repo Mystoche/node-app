@@ -4,8 +4,8 @@ pipeline {
     stages {
         stage('Clone') {
             steps {
-                // Cloner la branche main
-                git branch: 'main', url: 'https://github.com/Mystoche/node-app.git'
+                // Cloner la branche main de GitHub
+                git branch: 'main', url: ''
             }
         }
         stage('Build Docker Image') {
@@ -19,8 +19,17 @@ pipeline {
         stage('Run Tests') {
             steps {
                 script {
-                    // Ajoute ici des tests si nécessaire
                     echo 'Running tests...'
+                }
+            }
+        }
+        stage('SonarQube Analysis') {
+            steps {
+                script {
+                    // Analyser le code avec SonarQube
+                    withSonarQubeEnv('SonarQube') {
+                        sh 'sonar-scanner -Dsonar.projectKey=my-node-app -Dsonar.sources=. -Dsonar.host.url=http://192.168.100.6:9000 -Dsonar.login=YOUR_SONAR_TOKEN'
+                    }
                 }
             }
         }
