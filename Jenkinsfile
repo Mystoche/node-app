@@ -17,7 +17,7 @@ pipeline {
                 cleanWs()
             }
         }
-        
+
         stage('Clone') {
             steps {
                 // Cloner la branche main de GitHub
@@ -86,9 +86,20 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
-                    // Exécuter le conteneur Docker
+                    // Vérifier si le conteneur existe et le supprimer s'il est en cours d'exécution
+                    def containerName = "my-node-app-container"
+
+                    // Arrêter et supprimer le conteneur existant si nécessaire
+                    def existingContainer = sh(script: "docker ps -q -f name=${containerName}", returnStdout: true).trim()
+                    if (existingContainer) {
+                        echo "Stopping existing container: ${containerName}"
+                        sh "docker stop ${existingContainer}"
+                        sh "docker rm ${existingContainer}"
+                    }
+
+                    // Lancer le nouveau conteneur
                     echo 'Deploying application...'
-                    sh "docker run -d -p 3000:3000 ${IMAGE_NAME}:${IMAGE_TAG}"
+                    sh "docker run -d --name ${containerName} -p 3000:3000 ${IMAGE_NAME}:${IMAGE_TAG}"
                 }
             }
         }
