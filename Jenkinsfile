@@ -1,6 +1,26 @@
 pipeline {
     agent any
 
+
+    environment {
+        SCANNER_HOME = tool 'sonar-scanner'
+        APP_NAME = "my-node-app"
+        RELEASE = "1.0.0"
+        DOCKER_USER = "dulcinee"
+        DOCKER_PASS = 'DockerHub-Token'
+        IMAGE_NAME = "${DOCKER_USER}" + "/" + "${APP_NAME}"
+        IMAGE_TAG = "${RELEASE}-${BUILD_NUMBER}"
+	    
+    }
+
+    stages {
+        stage('clean workspace') {
+            steps {
+                cleanWs()
+            }
+
+            
+
     stages {
         stage('Clone') {
             steps {
@@ -26,15 +46,11 @@ pipeline {
                 }
             }
         }
-        stage('SonarQube Analysis') {
+        stage("Sonarqube Analysis") {
             steps {
-                script {
-                    // Analyser le code avec SonarQube
-                    echo 'Running SonarQube analysis...'
-                    sh 'sonar-scanner -v'
-                    withSonarQubeEnv('SonarQube') {
-                        sh 'sonar-scanner -Dsonar.projectKey=my-node-app -Dsonar.sources=. -Dsonar.host.url=http://172.22.0.2:9000 -Dsonar.login=squ_1a114a20bbfedabe17113904d9196aa48c05f4ef'
-                    }
+                withSonarQubeEnv('SonarQube-Server') {
+                    sh '''$SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=my-node-app \
+                    -Dsonar.projectKey=my-node-app'''
                 }
             }
         }
