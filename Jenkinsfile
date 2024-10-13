@@ -1,42 +1,40 @@
 pipeline {
     agent any
 
-
     environment {
         SCANNER_HOME = tool 'sonar-scanner'
         APP_NAME = "my-node-app"
         RELEASE = "1.0.0"
         DOCKER_USER = "dulcinee"
-        DOCKER_PASS = 'DockerHub-Token'
-        IMAGE_NAME = "${DOCKER_USER}" + "/" + "${APP_NAME}"
+        DOCKER_PASS = 'DockerHub-Token' // Pensez à utiliser une variable d'environnement sécurisée pour le mot de passe
+        IMAGE_NAME = "${DOCKER_USER}/${APP_NAME}"
         IMAGE_TAG = "${RELEASE}-${BUILD_NUMBER}"
-	    
     }
 
     stages {
-        stage('clean workspace') {
+        stage('Clean Workspace') {
             steps {
                 cleanWs()
             }
+        }
 
-            
-
-    stages {
-        stage('Clone') {
+        stage('Clone Repository') {
             steps {
                 // Cloner la branche main de GitHub
                 git branch: 'main', url: 'https://github.com/Mystoche/node-app'
             }
         }
+
         stage('Build Docker Image') {
             steps {
                 script {
                     // Construire l'image Docker
                     echo 'Building Docker image...'
-                    sh 'docker build -t my-node-app .'
+                    sh "docker build -t ${IMAGE_NAME}:${IMAGE_TAG} ."
                 }
             }
         }
+
         stage('Run Tests') {
             steps {
                 script {
@@ -46,14 +44,22 @@ pipeline {
                 }
             }
         }
-        stage("Sonarqube Analysis") {
+
+        stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('SonarQube-Server') {
-                    sh '''$SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=my-node-app \
-                    -Dsonar.projectKey=my-node-app'''
+                    sh '''
+                    $SCANNER_HOME/bin/sonar-scanner \
+                    -Dsonar.projectKey=my-node-app \
+                    -Dsonar.projectName=my-node-app \
+                    -Dsonar.host.url=http://localhost:9000 \
+                    -Dsonar.login=sqp_aee99270c8e58b18937dd36b6ac74a7ded6248c7 \
+                    -Dsonar.sources=.
+                    '''
                 }
             }
         }
+
         stage('Quality Gate') {
             steps {
                 script {
@@ -70,6 +76,7 @@ pipeline {
                 }
             }
         }
+
         stage('TRIVY FS SCAN') {
             steps {
                 script {
@@ -81,12 +88,13 @@ pipeline {
                 }
             }
         }
+
         stage('Deploy') {
             steps {
                 script {
                     // Exécuter le conteneur Docker
                     echo 'Deploying application...'
-                    sh 'docker run -d -p 3000:3000 my-node-app'
+                    sh "docker run -d -p 3000:3000 ${IMAGE_NAME}:${IMAGE_TAG}"
                 }
             }
         }
