@@ -10,14 +10,11 @@ COPY package*.json ./
 # Installer les dépendances
 RUN npm install
 
-# Copier tous les fichiers du répertoire public
-COPY public/ ./public/
-
-# Copier d'autres fichiers nécessaires depuis la racine
+# Copier tous les fichiers du projet à la racine
 COPY . .
 
 # Exposer le port sur lequel l'application va tourner
 EXPOSE 3000
 
 # Commande pour démarrer l'application
-CMD ["node", "/usr/src/app/public/app.js"]  # Chemin absolu vers app.js
+CMD ["node", "app.js"]  # Chemin vers app.js dans la racine
