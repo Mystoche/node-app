@@ -28,7 +28,7 @@ pipeline {
                 script {
                     // Analyser le code avec SonarQube
                     withSonarQubeEnv('SonarQube') {
-                        sh 'sonar-scanner -Dsonar.projectKey=my-node-app -Dsonar.sources=. -Dsonar.host.url=http://192.168.100.6:9000 -Dsonar.login=YOUR_SONAR_TOKEN'
+                        sh 'sonar-scanner -Dsonar.projectKey=my-node-app -Dsonar.sources=. -Dsonar.host.url=http://192.168.100.6:9000 -Dsonar.login=squ_1a114a20bbfedabe17113904d9196aa48c05f4ef'
                     }
                 }
             }
