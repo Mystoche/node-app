@@ -5,7 +5,7 @@ pipeline {
         stage('Clone') {
             steps {
                 // Cloner la branche main de GitHub
-                git branch: 'main', url: ''
+                git branch: 'main', url: 'https://github.com/Mystoche/node-app'
             }
         }
         stage('Build Docker Image') {
