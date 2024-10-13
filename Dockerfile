@@ -1,20 +1,23 @@
-# Dockerfile
+# Utiliser une image de base Node.js
 FROM node:14
 
-# Set the working directory
+# Définir le répertoire de travail
 WORKDIR /usr/src/app
 
-# Copy package.json and package-lock.json
+# Copier le package.json et le package-lock.json depuis la racine du projet
 COPY package*.json ./
 
-# Install dependencies
+# Installer les dépendances
 RUN npm install
 
-# Copy the application code
+# Copier tous les fichiers du répertoire public
+COPY public/ ./public/
+
+# Copier d'autres fichiers nécessaires depuis la racine
 COPY . .
 
-# Expose the application port
+# Exposer le port sur lequel l'application va tourner
 EXPOSE 3000
 
-# Command to run the application
-CMD ["node", "app.js"]
+# Commande pour démarrer l'application
+CMD ["node", "/usr/src/app/public/app.js"]  # Chemin absolu vers app.js
