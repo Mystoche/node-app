@@ -6,7 +6,7 @@ pipeline {
         APP_NAME = "my-node-app"
         RELEASE = "1.0.0"
         DOCKER_USER = "dulcinee"
-        DOCKER_PASS = 'DockerHub-Token' // Pensez à utiliser une variable d'environnement sécurisée pour le mot de passe
+        DOCKER_PASS = 'DockerHub-Token'
         IMAGE_NAME = "${DOCKER_USER}/${APP_NAME}"
         IMAGE_TAG = "${RELEASE}-${BUILD_NUMBER}"
     }
@@ -17,8 +17,8 @@ pipeline {
                 cleanWs()
             }
         }
-
-        stage('Clone Repository') {
+        
+        stage('Clone') {
             steps {
                 // Cloner la branche main de GitHub
                 git branch: 'main', url: 'https://github.com/Mystoche/node-app'
@@ -40,22 +40,16 @@ pipeline {
                 script {
                     // Placeholder pour l'exécution des tests
                     echo 'Running tests...'
-                    // Ajouter ici des commandes pour exécuter des tests (par exemple, `npm test`)
+                    // Ajouter ici des commandes pour exécuter des tests (par exemple, npm test)
                 }
             }
         }
 
-        stage('SonarQube Analysis') {
+        stage("SonarQube Analysis") {
             steps {
                 withSonarQubeEnv('SonarQube-Server') {
-                    sh '''
-                    $SCANNER_HOME/bin/sonar-scanner \
-                    -Dsonar.projectKey=my-node-app \
-                    -Dsonar.projectName=my-node-app \
-                    -Dsonar.host.url=http://localhost:9000 \
-                    -Dsonar.login=sqp_aee99270c8e58b18937dd36b6ac74a7ded6248c7 \
-                    -Dsonar.sources=.
-                    '''
+                    sh '''$SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=my-node-app \
+                    -Dsonar.projectKey=my-node-app'''
                 }
             }
         }
