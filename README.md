@@ -130,7 +130,3 @@ Pour gérer les versions de ton code, tu peux utiliser les tags Git :
   git tag -a v1.0 -m "Version 1.0"
   git push origin v1.0
   ```
-
-### Conclusion
-
-Avec ce projet CI/CD utilisant Docker, GitHub et Jenkins, tu as créé un pipeline simple qui te permet de déployer automatiquement une application Node.js. Tu peux adapter ce modèle pour des projets plus complexes ou d'autres langages en ajustant les étapes et les configurations selon tes besoins. Si tu as des questions ou des ajustements spécifiques en tête, n'hésite pas à demander !
