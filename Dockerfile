@@ -19,5 +19,5 @@ COPY . .
 # Exposer le port sur lequel l'application va tourner
 EXPOSE 3000
 
-# Commande pour démarrer l'application
+# Commande pour démarrer l'application en utilisant la forme exec
 CMD ["node", "public/app.js"]  # Chemin correct vers app.js
